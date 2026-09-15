@@ -1,0 +1,4 @@
+cd reddit-leads
+git add -A
+git commit -m "Fix Dockerfile build: use -mod=mod instead of go mod download"
+git push
