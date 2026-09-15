@@ -1,0 +1,8 @@
+# Caddy automatically obtains and renews a free Let's Encrypt HTTPS
+# certificate for this domain — no manual certbot/nginx TLS config needed.
+# Replace with your own domain if different from the default in .env.
+{$DOMAIN} {
+	# Frontend (static React app + its internal /api/ proxy to the api
+	# service) is the single public entry point.
+	reverse_proxy web:80
+}
