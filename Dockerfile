@@ -3,10 +3,9 @@
 FROM golang:1.24-alpine AS build
 WORKDIR /src
 COPY go.mod go.sum* ./
-RUN go build -mod=mod
 COPY . .
-RUN go build -o /out/api ./apps/api
-RUN go build -o /out/worker ./apps/worker
+RUN go build -mod=mod -o /out/api ./apps/api
+RUN go build -mod=mod -o /out/worker ./apps/worker
 
 FROM alpine:3.19 AS api
 RUN apk add --no-cache ca-certificates
