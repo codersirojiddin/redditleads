@@ -3,7 +3,7 @@
 FROM golang:1.24-alpine AS build
 WORKDIR /src
 COPY go.mod go.sum* ./
-RUN go mod download
+RUN go build -mod=mod
 COPY . .
 RUN go build -o /out/api ./apps/api
 RUN go build -o /out/worker ./apps/worker
