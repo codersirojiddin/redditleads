@@ -1,0 +1,26 @@
+# syntax=docker/dockerfile:1
+
+FROM golang:1.24-alpine AS build
+WORKDIR /src
+COPY go.mod go.sum* ./
+COPY . .
+# go.sum isn't committed (it's environment-dependent to generate cleanly);
+# -mod=mod lets `go build` resolve and write go.sum entries for whatever the
+# actual build graph needs, using the full internet access available here.
+RUN go build -mod=mod -o /out/api ./apps/api
+RUN go build -mod=mod -o /out/worker ./apps/worker
+
+FROM alpine:3.19 AS api
+RUN apk add --no-cache ca-certificates
+WORKDIR /app
+COPY --from=build /out/api ./api
+COPY migrations ./migrations
+EXPOSE 8080
+ENTRYPOINT ["./api"]
+
+FROM alpine:3.19 AS worker
+RUN apk add --no-cache ca-certificates
+WORKDIR /app
+COPY --from=build /out/worker ./worker
+COPY migrations ./migrations
+ENTRYPOINT ["./worker"]

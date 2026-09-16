@@ -1,0 +1,48 @@
+APP_ENV=development
+PORT=8080
+BASE_URL=http://localhost:8080
+
+# Local dev via docker-compose's "db" service. For a free-tier deploy
+# (Render, Fly, etc.) use a free Supabase Postgres connection string instead
+# — see README.md's "Free hosting deploy" section.
+DATABASE_URL=postgres://postgres:postgres@localhost:5432/reddit_leads?sslmode=disable
+
+# Used to sign/verify JWT auth tokens. Generate with: openssl rand -hex 32
+JWT_SECRET=
+JWT_EXPIRY_HOURS=168
+
+# Reddit discovery. Without REDDIT_CLIENT_ID/SECRET, uses the public
+# search.json endpoint with free fetch-proxy fallbacks for hosts on blocked
+# cloud IP ranges (Render, Fly, etc.) — no signup needed, works out of the
+# box. If you later get a Reddit "script" app
+# (https://www.reddit.com/prefs/apps), set REDDIT_CLIENT_ID/SECRET below to
+# switch to the sanctioned OAuth API instead.
+REDDIT_CLIENT_ID=
+REDDIT_CLIENT_SECRET=
+REDDIT_USER_AGENT=reddit-leads/0.1 by yourusername
+
+# Used by internal/ai to classify posts (relevance + intent scoring).
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-4o-mini
+
+# Paddle (billing) - wired in once the opportunity engine is validated.
+PADDLE_API_KEY=
+PADDLE_WEBHOOK_SECRET=
+
+RESEND_API_KEY=
+EMAIL_FROM=
+
+# Origin allowed via CORS. Only strictly needed if the frontend calls the API
+# directly instead of through a proxy (both `npm run dev` and the nginx
+# container in docker-compose already proxy /api same-origin, so this mostly
+# matters if you deploy the frontend and API on different hosts).
+FRONTEND_URL=http://localhost:3000
+
+# Your public domain, pointed at this server's IP (an A record). Used by the
+# "caddy" service in docker-compose to request a free automatic HTTPS
+# certificate. Not used at all for local dev.
+DOMAIN=
+
+# Worker tuning
+WORKER_POLL_INTERVAL_SECONDS=5
+MAX_POSTS_PER_KEYWORD=50

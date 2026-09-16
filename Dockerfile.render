@@ -1,9 +1,21 @@
 # syntax=docker/dockerfile:1
+#
+# Standalone Dockerfile for single-service free-tier hosts (Render, Railway,
+# Fly, etc.) that build "the Dockerfile" without letting you pick a
+# multi-stage --target. This image only contains the API binary — which, by
+# default (RUN_WORKER_INMEMORY=true), also runs the background report
+# worker as an in-process goroutine. One image, one service, both jobs done.
+#
+# The root Dockerfile is still used for docker-compose (separate api/worker
+# containers) — this file is purely for hosts that need a single image.
 
 FROM golang:1.24-alpine AS build
 WORKDIR /src
 COPY go.mod go.sum* ./
 COPY . .
+# go.sum isn't committed (it's environment-dependent to generate cleanly);
+# -mod=mod lets `go build` resolve and write go.sum entries for whatever the
+# actual build graph needs, using the full internet access available here.
 RUN go build -mod=mod -o /out/api ./apps/api
 
 FROM alpine:3.19
